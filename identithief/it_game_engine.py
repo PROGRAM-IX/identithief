@@ -109,7 +109,7 @@ class ITGameEngine(GameEngine):
                                "identithief", (15, 20), 1, 2))
         self._hud.add(HUDText("Dodginess", pygame.Color(255, 255, 255),
                                "dodginess " + str(self.dodginess), 
-                               (550, 20), 1, 2))
+                               (600, 20), 1, 2))
         self._hud.add(HUDText("Messages", pygame.Color(255, 255, 255),
                                self.messages[self.curr_message], (15, 575), 
                                1, 2))
@@ -174,6 +174,8 @@ class ITGameEngine(GameEngine):
             print "NICE WAAAAN"
             self._hud.add(HUDText("GameOver", pygame.Color(0, 255, 0),
                                   "niiice", (250, 300), 5, 6))             
+        self._hud.add(HUDText("Restart", pygame.Color(255, 255, 255),
+                                  "r to restart", (230, 400), 2, 2))
         self.paused = True
         
     def dodge(self, num):
