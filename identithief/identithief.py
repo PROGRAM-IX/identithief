@@ -13,8 +13,8 @@ class IdentiThief(Game):
         self.engine.run()
         
 def main():
-    g = IdentiThief(800, 600)
-    g.start()
+    game = IdentiThief(800, 600)
+    game.start()
     
 if __name__ == "__main__":
     main()

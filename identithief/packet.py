@@ -13,9 +13,9 @@ class Packet(Vex):
         self.value = value
         p = Vector2(target.x, target.y)
         v = self.vector_between(p)
-        print v
-        self.x_mod = v.normalised().x * 5
-        self.y_mod = v.normalised().y * 5
+        #print v
+        self.x_mod = v.normalised().x * 3
+        self.y_mod = v.normalised().y * 3
         self.x += self.x_mod
         self.y += self.y_mod
         self.rotate_to_face_point(p)
