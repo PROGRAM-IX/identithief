@@ -1,14 +1,13 @@
 import pygame
 from pygame.locals import *
-from pystroke.hud import *
+from pystroke.hud import HUD, HUDText, HUDPolygon
 from pystroke.game_engine import GameEngine
 from pystroke.vector2 import Vector2
 from pystroke.vex import Vex
 
-from packet import Packet
 from victim import Victim
 
-from random import randint, choice
+from random import choice
 
 
 
@@ -30,23 +29,26 @@ class ITGameEngine(GameEngine):
         self.curr_message = 0
         self.max_dodginess = 5
         self.p_down = False
-        self.messages = ["click on packets to steal identities",
-                         "four unique packets from one computer will do",
+        self.messages = ["click on packets to sniff",
+                         "four unique packets from one computer steals id",
                          "you cannot tell which packet is which",
                          "packets that reach their target nullify stolen ones",
                          "sniffing packets increases dodginess",
-                         "if you let the dodginess reach 5 you lose",
+                         "if you let the dodginess reach 5 you are kicked",
                          "dodginess decreases when packets reach their target",
+                         "dodginess also decreases with every stolen identity",
                          "the pips on each screen represent stolen packets"]
         #self.computers.append(Victim(200, 200, pygame.Color(99, 99, 0), "DUR?"))
         #self.computers.append(Victim(600, 200, pygame.Color(0, 255, 0), "HNG!"))
+        self.game_over_sound = pygame.mixer.Sound("assets/begin.wav")
+        self.capture_sound = pygame.mixer.Sound("assets/capture.wav")
         
         
     def update(self):
         self.event_e.update()
         if self.event_e.input.keys[K_ESCAPE] == True:
-            pygame.quit()
-            raise SystemExit
+            print "Switching from game"
+            return 0
         if self.event_e.input.mouse_buttons[1] == True:
             if not self.m1_down:
                 self.m1_down = True
@@ -81,7 +83,9 @@ class ITGameEngine(GameEngine):
     def run(self):
         self.game_reset()
         while self.running:
-            self.update()
+            r = self.update()
+            if r == 0 or r == 1:
+                return r
             self.draw()
          
     def game_reset(self):
@@ -97,9 +101,9 @@ class ITGameEngine(GameEngine):
         #self.computers.append(Victim(400, 200, pygame.Color(0, 255, 0), 
         #                             "MLN/"))
         self.computers.append(Victim(100, 500, pygame.Color(0, 255, 255), 
-                                     "UYL)"))
+                                     "UYL*"))
         self.computers.append(Victim(700, 500, pygame.Color(255, 255, 0), 
-                                     "POT@"))
+                                     "POY7"))
         del self._hud
         self._hud = HUD()
         self._hud.add(HUDPolygon("Box1", pygame.Color(255, 255, 255),
@@ -148,6 +152,7 @@ class ITGameEngine(GameEngine):
                 self.curr_message = m
             else:
                 self.curr_message = 0
+                self._hud.get("Messages").text = self.messages[0]
         
     def manage_stolen(self):
         for c in self.computers:
@@ -176,6 +181,8 @@ class ITGameEngine(GameEngine):
                                   "niiice", (250, 300), 5, 6))             
         self._hud.add(HUDText("Restart", pygame.Color(255, 255, 255),
                                   "r to restart", (230, 400), 2, 2))
+        self.game_over_sound.play()
+        
         self.paused = True
         
     def dodge(self, num):
@@ -188,6 +195,7 @@ class ITGameEngine(GameEngine):
         print "Captured", packet.value
         packet.sender.sniff(packet.value)
         self.dodge(1)
+        self.capture_sound.play()
         self.packets.remove(packet)
 
     

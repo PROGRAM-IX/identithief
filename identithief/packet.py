@@ -1,4 +1,3 @@
-import pygame
 from pystroke.vex import Vex
 from pystroke.vector2 import Vector2
 
